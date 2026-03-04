@@ -28,7 +28,9 @@ fun RequestRideScreen(
     Column(Modifier.fillMaxSize()) {
 
         Row(
-            Modifier.fillMaxWidth().padding(16.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextButton(onClick = onBack) { Text("← Volver") }
@@ -60,7 +62,6 @@ fun RequestRideScreen(
             }
         }
 
-        // ── Panel inferior con precio y botón ──
         Surface(
             tonalElevation = 4.dp,
             modifier = Modifier.fillMaxWidth()
@@ -79,7 +80,9 @@ fun RequestRideScreen(
                             rideVm.requestRide()
                             onRideRequested()
                         },
-                        modifier = Modifier.fillMaxWidth().height(56.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
                     ) {
                         Text("🚗 Pedir viaje",
                             style = MaterialTheme.typography.titleMedium)
@@ -89,6 +92,7 @@ fun RequestRideScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
+            Spacer(Modifier.height(15.dp))
         }
     }
 }

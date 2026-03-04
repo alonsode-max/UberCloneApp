@@ -14,6 +14,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -25,6 +26,7 @@ sealed interface AuthState {
     data class  Error(val msg: String) : AuthState
 }
 
+@HiltViewModel
 class AuthViewModel @Inject constructor(
     private val auth: FirebaseAuth
 ):ViewModel() {

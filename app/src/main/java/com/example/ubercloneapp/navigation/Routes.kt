@@ -1,7 +1,9 @@
 package com.example.ubercloneapp.navigation
 
+
 object Routes {
     const val LOGIN       = "login"
+    const val RIDE_DETAIL = "ride_detail/{rideId}"
     const val REGISTER    = "register"
     const val HOME_MAP    = "home_map"
     const val REQUEST     = "request_ride"

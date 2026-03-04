@@ -1,5 +1,6 @@
 package com.example.ubercloneapp.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,11 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.ubercloneapp.viewmodel.RideViewModel
+import com.example.ubercloneapp.navigation.AppNavigation
 
 @Composable
 fun RideHistoryScreen(
     rideVm: RideViewModel,
-    onBack:  () -> Unit
+    onBack:  () -> Unit,
+    onRideClick:(String)->Unit
 ) {
     LaunchedEffect(Unit) {
         rideVm.loadRideHistory()
@@ -38,8 +41,8 @@ fun RideHistoryScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(rideVm.rideHistory) { ride ->
-
-                    Card(Modifier.fillMaxWidth()) {
+                    Card(Modifier.fillMaxWidth().clickable{onRideClick(ride.firestoreId)})
+                    {
                         Column(Modifier.padding(16.dp)) {
                             Row(Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween) {

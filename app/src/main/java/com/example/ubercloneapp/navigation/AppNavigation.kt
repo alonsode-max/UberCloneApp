@@ -2,13 +2,17 @@ package com.example.ubercloneapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.ubercloneapp.ui.*
 import com.example.ubercloneapp.viewmodel.AuthViewModel
 import com.example.ubercloneapp.viewmodel.PaymentViewModel
 import com.example.ubercloneapp.viewmodel.ProfileViewModel
 import com.example.ubercloneapp.viewmodel.RideViewModel
+import androidx.navigation.navDeepLink
+
 
 @Composable
 fun AppNavigation(
@@ -21,6 +25,35 @@ fun AppNavigation(
     val startRoute = if (authVm.isLoggedIn) Routes.HOME_MAP else Routes.LOGIN
 
     NavHost(navController, startDestination = startRoute) {
+        composable(
+            route = "ride_detail/{rideId}",
+            arguments = listOf(
+                navArgument("rideId") { type = NavType.StringType }
+            ),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "uberclone://ride/{rideId}"
+                }
+            )
+        ) { backStackEntry ->
+            val rideId = backStackEntry.arguments?.getString("rideId")
+            RideDetailScreen(rideId = rideId)
+        }
+
+        composable(
+            route = Routes.RIDE_DETAIL,
+            arguments = listOf(
+                navArgument("rideId") { type = NavType.StringType }
+            ),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "uberclone://ride/{rideId}"
+                }
+            )
+        ) { backStackEntry ->
+            val rideId = backStackEntry.arguments?.getString("rideId")
+            RideDetailScreen(rideId = rideId)
+        }
 
         composable(Routes.LOGIN) {
             LoginScreen(
@@ -107,7 +140,10 @@ fun AppNavigation(
         composable(Routes.HISTORY) {
             RideHistoryScreen(
                 rideVm = rideVm,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack()},
+                onRideClick = {id ->
+                    navController.navigate("ride_detail/$id")
+                }
             )
         }
 

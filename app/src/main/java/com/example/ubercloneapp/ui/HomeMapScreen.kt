@@ -1,6 +1,7 @@
 package com.example.ubercloneapp.ui
 
 import android.Manifest
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 
 import com.example.ubercloneapp.viewmodel.RideViewModel
+import android.content.Intent
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable

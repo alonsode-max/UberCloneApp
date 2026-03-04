@@ -1,6 +1,7 @@
 package com.example.ubercloneapp.model
 
 data class Ride(
+    val firestoreId:  String = "",
     val userId:       String = "",
 
     val originLat:    Double = 0.0,
@@ -10,6 +11,7 @@ data class Ride(
     val destLat:      Double = 0.0,
     val destLng:      Double = 0.0,
     val destName:     String = "",
+    val distanceKm:   Double = 0.0,
 
     val driverName:   String = "",
     val price:        Double = 0.0,

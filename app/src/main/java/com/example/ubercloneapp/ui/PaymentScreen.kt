@@ -63,7 +63,6 @@ fun PaymentScreen(
         }
     }
 
-    // ── UI ──
     Column(
         Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

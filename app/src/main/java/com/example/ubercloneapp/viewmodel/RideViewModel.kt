@@ -10,6 +10,9 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ubercloneapp.R
+import com.example.ubercloneapp.data.local.RideDao
+import com.example.ubercloneapp.data.local.toEntity
+import com.example.ubercloneapp.data.local.toRide
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
@@ -20,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.android.gms.maps.model.LatLng
 
 import com.example.ubercloneapp.model.Ride
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 sealed interface RideState {
@@ -37,10 +41,12 @@ sealed interface RideState {
     data object Completed      : RideState
 }
 
+@HiltViewModel
 class RideViewModel @Inject constructor(
 
     private val auth:FirebaseAuth,
-    private val db : FirebaseFirestore
+    private val db : FirebaseFirestore,
+    private val rideDao: RideDao
 
 ): ViewModel() {
 
@@ -58,6 +64,9 @@ class RideViewModel @Inject constructor(
         private set
 
     var estimatePrice: Double by mutableStateOf(0.0)
+        private set
+
+    var lastRideId: String? by mutableStateOf(null)
         private set
 
     var driverName: String by mutableStateOf("")
@@ -135,6 +144,7 @@ class RideViewModel @Inject constructor(
             destLat      = dest.latitude,
             destLng      = dest.longitude,
             destName     = destinationName,
+            distanceKm   = haversineDistance(origin,dest),
             driverName   = driverName,
             price        = estimatePrice,
             status       = "completed",
@@ -143,7 +153,10 @@ class RideViewModel @Inject constructor(
         )
         viewModelScope.launch {
             try {
-                db.collection("rides").add(ride).await()
+                val docRef=db.collection("rides").add(ride).await()
+                lastRideId=docRef.id
+                val savedRide = ride.copy(firestoreId = docRef.id)
+                rideDao.insertAll(listOf(savedRide.toEntity()))
                 resultMsg = "✅ Viaje guardado"
             } catch (e: Exception) {
                 resultMsg = "❌ Error: ${e.localizedMessage}"
@@ -161,9 +174,13 @@ class RideViewModel @Inject constructor(
                     .get()
                     .await()
                 rideHistory =
-                    snapshot.documents.mapNotNull { doc -> doc.toObject(Ride::class.java) }
+                    snapshot.documents.mapNotNull { doc -> doc.toObject(Ride::class.java)?.copy(firestoreId = doc.id) }
+                val entities = rideHistory.map { it.toEntity() }
+                rideDao.insertAll(entities)
             }catch (_:Exception){
-                rideHistory=emptyList()
+                rideDao.getRidesByUser(user.uid).collect { entities ->
+                    rideHistory = entities.map { it.toRide() }
+                }
             }
         }
     }
