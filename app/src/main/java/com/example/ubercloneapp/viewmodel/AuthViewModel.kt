@@ -94,7 +94,6 @@ class AuthViewModel @Inject constructor(
                 if (credential is CustomCredential &&
                     credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
                 ) {
-                    // ⑥ Parsear el token
                     val googleIdToken = GoogleIdTokenCredential
                         .createFrom(credential.data)
                         .idToken
